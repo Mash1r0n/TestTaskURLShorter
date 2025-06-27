@@ -1,8 +1,7 @@
 ﻿using Application.DTOs;
+using Application.Interfaces;
 using AutoMapper;
-using Domain.AdditionalFunctionality;
 using Domain.Entities;
-using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

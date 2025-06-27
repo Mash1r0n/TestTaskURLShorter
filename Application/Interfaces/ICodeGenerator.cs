@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.AdditionalFunctionality
+namespace Application.Interfaces
 {
     public interface ICodeGenerator
     {

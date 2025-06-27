@@ -1,5 +1,4 @@
-﻿using Domain.AdditionalFunctionality;
-using Domain.Exceptions;
+﻿using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,11 +36,6 @@ namespace Domain.Entities
                 OwnerId = ownerId,
                 DynamicMetadata = new UrlDynamicMetadata()
             };
-        }
-
-        private static string GenerateCode()
-        {
-            return Guid.NewGuid().ToString("N")[..8];
         }
 
         public void RegisterClick()
