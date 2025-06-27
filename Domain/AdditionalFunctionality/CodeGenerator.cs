@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Domain.AdditionalFunctionality
 {
-    public static class CodeGenerator
+    public class CodeGenerator : ICodeGenerator
     {
         private const string Alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-        public static string Generate(int length = 8)
+        public string Generate(int length = 8)
         {
             var guidBytes = Guid.NewGuid().ToByteArray();
             var number = BitConverter.ToUInt64(guidBytes, 0);

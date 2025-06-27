@@ -15,11 +15,13 @@ namespace Application.UseCases.ShortUrls.CreateShortUrl
     {
         private readonly IShortUrlRepository _repository;
         private readonly IMapper _mapper;
+        private readonly ICodeGenerator _codeGenerator;
 
-        public CreateShortUrlHandler(IShortUrlRepository repository, IMapper mapper)
+        public CreateShortUrlHandler(IShortUrlRepository repository, IMapper mapper, ICodeGenerator codeGenerator)
         {
             _repository = repository;
             _mapper = mapper;
+            _codeGenerator = codeGenerator;
         }
 
         public async Task<ShortUrlDto> Handle(CreateShortUrlCommand command)
@@ -28,7 +30,7 @@ namespace Application.UseCases.ShortUrls.CreateShortUrl
 
             do
             {
-                code = CodeGenerator.Generate();
+                code = _codeGenerator.Generate();
                 
             }
             while (await _repository.GetByCodeAsync(code) != null);
