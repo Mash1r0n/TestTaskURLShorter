@@ -1,6 +1,4 @@
-﻿using Application.Interfaces;
-using Infrastructure.ShortCodeGenerator;
-using Infrastructure.Persistence;
+﻿using Infrastructure.Persistence;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Infrastructure.Services;
+using Application.Interfaces.Repositories;
+using Application.Interfaces.Services;
 
 namespace Infrastructure.DependencyInjection
 {
@@ -23,8 +25,12 @@ namespace Infrastructure.DependencyInjection
 
             services.AddTransient<IShortUrlRepository, ShortUrlRepository>();
             services.AddTransient<IUrlDynamicMetadataRepository, UrlDynamicMetadataRepository>();
+            services.AddTransient<ITokenService, TokenService>();
 
-            services.AddTransient<ICodeGenerator, CodeGenerator>();
+            services.AddTransient<IShortUrlCodeGeneratorService, ShortUrlCodeGeneratorService>();
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                    .AddEntityFrameworkStores<AppDbContext>();
 
             return services;
         }

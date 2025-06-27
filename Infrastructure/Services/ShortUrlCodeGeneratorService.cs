@@ -1,13 +1,13 @@
-﻿using Application.Interfaces;
+﻿using Application.Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.ShortCodeGenerator
+namespace Infrastructure.Services
 {
-    public class CodeGenerator : ICodeGenerator
+    public class ShortUrlCodeGeneratorService : IShortUrlCodeGeneratorService
     {
         private const string Alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 

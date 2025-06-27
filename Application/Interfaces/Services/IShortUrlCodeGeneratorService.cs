@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Interfaces
+namespace Application.Interfaces.Services
 {
-    public interface ICodeGenerator
+    public interface IShortUrlCodeGeneratorService
     {
         string Generate(int length = 8);
     }

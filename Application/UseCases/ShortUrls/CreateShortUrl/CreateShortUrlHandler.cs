@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
-using Application.Interfaces;
+using Application.Interfaces.Repositories;
+using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -14,9 +15,9 @@ namespace Application.UseCases.ShortUrls.CreateShortUrl
     {
         private readonly IShortUrlRepository _repository;
         private readonly IMapper _mapper;
-        private readonly ICodeGenerator _codeGenerator;
+        private readonly IShortUrlCodeGeneratorService _codeGenerator;
 
-        public CreateShortUrlHandler(IShortUrlRepository repository, IMapper mapper, ICodeGenerator codeGenerator)
+        public CreateShortUrlHandler(IShortUrlRepository repository, IMapper mapper, IShortUrlCodeGeneratorService codeGenerator)
         {
             _repository = repository;
             _mapper = mapper;
