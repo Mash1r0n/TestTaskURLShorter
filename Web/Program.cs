@@ -7,6 +7,7 @@ using System.Reflection;
 using Web.Constants;
 using Web.DependencyInjection;
 using Web.Extensions;
+using Web.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,6 +99,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseCors(OwnCorsConstants.CorsPolicy);
 

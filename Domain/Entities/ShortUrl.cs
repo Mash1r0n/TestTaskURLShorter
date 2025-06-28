@@ -18,14 +18,14 @@ namespace Domain.Entities
 
         public void ChangeDestination(string newUrl)
         {
-            if (!Uri.IsWellFormedUriString(newUrl, UriKind.Absolute)) throw new ValidationNotPassedException($"Invalid URL: {nameof(newUrl)}");
+            if (!Uri.IsWellFormedUriString(newUrl, UriKind.Absolute)) throw new ValidationNotPassedException($"Invalid URL: {newUrl}");
 
             LongUrl = newUrl;
         }
 
         public static ShortUrl Create(string longUrl, string ownerId, string shortedUrlCode)
         {
-            if (!Uri.IsWellFormedUriString(longUrl, UriKind.Absolute)) throw new ValidationNotPassedException($"Invalid URL: {nameof(longUrl)}");
+            if (!Uri.IsWellFormedUriString(longUrl, UriKind.Absolute)) throw new ValidationNotPassedException($"Invalid URL: {longUrl}");
 
             return new ShortUrl
             {

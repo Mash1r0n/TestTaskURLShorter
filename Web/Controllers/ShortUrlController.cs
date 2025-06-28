@@ -54,7 +54,7 @@ namespace Web.Controllers
             if (userId == null) { return Unauthorized(); }
 
             var isLongUrlForThisUserExists = await _shortUrlRepository.ExistsForUserAsync(createShortUrlModel.LongUrl, userId);
-            if (isLongUrlForThisUserExists) { return BadRequest("Only unique long urls per user"); }
+            if (isLongUrlForThisUserExists) return BadRequest("Only unique long urls per user");
 
             CreateShortUrlCommand createShortUrlCommand = new CreateShortUrlCommand
             {
@@ -77,12 +77,12 @@ namespace Web.Controllers
         public async Task<IActionResult> DeleteShortUrlByCode([FromRoute] string code)
         {
             var foundEntityForDelete = await _shortUrlRepository.GetByCodeAsync(code);
-            if (foundEntityForDelete == null) { return NotFound(); }
+            if (foundEntityForDelete == null) return NotFound();
 
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) { return Unauthorized(); }
+            if (userId == null) return Unauthorized();
 
-            if (foundEntityForDelete.OwnerId != userId && IsUserNotAdmin()) { return StatusCode(403, new { error = "User can delete only their shorted urls" }); }
+            if (foundEntityForDelete.OwnerId != userId && IsUserNotAdmin())return StatusCode(403, new { error = "User can delete only their shorted urls" });
 
             await _shortUrlRepository.DeleteAsync(foundEntityForDelete);
 

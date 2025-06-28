@@ -19,13 +19,13 @@ namespace Web.Controllers
         public async Task<IActionResult> RedirectToLongUrl(string code)
         {
             var shortUrl = await _repository.GetByCodeAsync(code);
-            if (shortUrl == null) return NotFound("Посилання не знайдено");
+            if (shortUrl == null) return NotFound("URL not found");
 
             shortUrl.RegisterClick();
 
             await _repository.UpdateAsync(shortUrl);
 
-            return Redirect(shortUrl.LongUrl);
+            return Ok(shortUrl.LongUrl);
         }
     }
 }
