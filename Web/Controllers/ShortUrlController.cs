@@ -27,6 +27,7 @@ namespace Web.Controllers
             _retrieveShortUrlInfoHandler = retrieveShortUrlInfoHandler;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllShortUrls()
         {

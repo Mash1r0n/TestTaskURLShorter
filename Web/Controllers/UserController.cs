@@ -26,6 +26,7 @@ namespace Web.Controllers
             _tokenService = tokenService;
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
@@ -43,37 +44,32 @@ namespace Web.Controllers
             return Ok();
         }
 
+        private async Task<bool> IsUserAdminAsync(IdentityUser user)
+        {
+            return await _userManager.IsInRoleAsync(user, "Admin");
+        }
+
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
-            if (user == null) return Unauthorized("Invalid credentials");
+            if (user == null) return Unauthorized("Account with this email not existed");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
-            if (!result.Succeeded) return Unauthorized("Invalid credentials");
+            if (!result.Succeeded) return Unauthorized("Incorrect password");
 
             var token = await _tokenService.CreateToken(user);
-            return Ok(new { token });
-        }
+            bool isUserAdmin = await IsUserAdminAsync(user);
 
-        [Authorize]
-        [HttpGet("me")]
-        public IActionResult GetUser()
-        {
-            var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-            if (email == null) return Unauthorized();
+            UserLoginResponseDto userLoginResponse = new UserLoginResponseDto
+            {
+                Token = token,
+                UserId = user.Id,
+                IsUserAdmin = isUserAdmin
+            };
 
-            return Ok(new { UserId = email });
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("adminMe")]
-        public IActionResult GetAdminUser()
-        {
-            var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-            if (email == null) return Unauthorized();
-
-            return Ok(new { UserId = email });
+            return Ok(userLoginResponse);
         }
     }
 }
