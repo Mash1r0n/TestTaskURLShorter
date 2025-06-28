@@ -52,6 +52,13 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(x => x.Code == code);
         }
 
+        public async Task<ShortUrl?> GetByIdAsync(Guid id)
+        {
+            return await _context.ShortUrls
+                .Include(x => x.DynamicMetadata)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task UpdateAsync(ShortUrl shortUrl)
         {
             _context.ShortUrls.Update(shortUrl);

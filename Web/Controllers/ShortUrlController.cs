@@ -39,7 +39,7 @@ namespace Web.Controllers
         {
             RetrieveShortUrlInfoCommand retrieveShortUrlInfoCommand = new RetrieveShortUrlInfoCommand
             {
-                ShortUrlCode = retrieveShortUrlInfoModel.ShortUrlCode
+                ShortUrlId = retrieveShortUrlInfoModel.ShortUrlId
             };
 
             return Ok(await _retrieveShortUrlInfoHandler.HandleAsync(retrieveShortUrlInfoCommand));

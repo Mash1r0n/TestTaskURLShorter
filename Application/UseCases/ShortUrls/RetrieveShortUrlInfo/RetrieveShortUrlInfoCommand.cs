@@ -8,6 +8,6 @@ namespace Application.UseCases.ShortUrls.RetrieveShortUrlInfo
 {
     public class RetrieveShortUrlInfoCommand
     {
-        public string ShortUrlCode { get; set; } = null!;
+        public Guid ShortUrlId { get; set; }
     }
 }

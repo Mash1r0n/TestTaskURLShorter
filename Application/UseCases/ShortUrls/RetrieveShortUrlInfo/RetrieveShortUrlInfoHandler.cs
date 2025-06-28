@@ -25,7 +25,7 @@ namespace Application.UseCases.ShortUrls.RetrieveShortUrlInfo
 
         public async Task<ShortUrlInfoDto> HandleAsync(RetrieveShortUrlInfoCommand command)
         {
-            var entity = await _repository.GetByCodeAsync(command.ShortUrlCode);
+            var entity = await _repository.GetByIdAsync(command.ShortUrlId);
 
             return _mapper.Map<ShortUrlInfoDto>(entity);
         }
