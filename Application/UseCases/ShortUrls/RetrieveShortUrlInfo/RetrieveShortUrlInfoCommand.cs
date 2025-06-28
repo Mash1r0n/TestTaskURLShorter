@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.UseCases.ShortUrls.RetrieveShortUrlInfo
+{
+    public class RetrieveShortUrlInfoCommand
+    {
+        public string ShortUrlCode { get; set; } = null!;
+    }
+}

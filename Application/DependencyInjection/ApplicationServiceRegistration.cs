@@ -1,4 +1,5 @@
 ﻿using Application.UseCases.ShortUrls.CreateShortUrl;
+using Application.UseCases.ShortUrls.RetrieveShortUrlInfo;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Application.DependencyInjection
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddTransient<CreateShortUrlHandler>();
+            services.AddTransient<RetrieveShortUrlInfoHandler>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

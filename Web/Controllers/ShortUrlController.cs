@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.UseCases.ShortUrls.CreateShortUrl;
+using Application.UseCases.ShortUrls.RetrieveShortUrlInfo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -14,16 +15,16 @@ namespace Web.Controllers
     public class ShortUrlController : ControllerBase
     {
         private readonly IShortUrlRepository _shortUrlRepository;
-        private readonly IUrlDynamicMetadataRepository _urlDynamicMetadataRepository;
         private readonly CreateShortUrlHandler _createShortUrlHandler;
+        private readonly RetrieveShortUrlInfoHandler _retrieveShortUrlInfoHandler;
 
         public ShortUrlController(IShortUrlRepository shortUrlRepository, 
-                                  CreateShortUrlHandler createShortUrlHandler, 
-                                  IUrlDynamicMetadataRepository urlDynamicMetadataRepository)
+                                  CreateShortUrlHandler createShortUrlHandler,
+                                  RetrieveShortUrlInfoHandler retrieveShortUrlInfoHandler)
         {
             _shortUrlRepository = shortUrlRepository;
             _createShortUrlHandler = createShortUrlHandler;
-            _urlDynamicMetadataRepository = urlDynamicMetadataRepository;
+            _retrieveShortUrlInfoHandler = retrieveShortUrlInfoHandler;
         }
 
         [HttpGet]
@@ -33,10 +34,15 @@ namespace Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("{code}")]
-        public async Task<IActionResult> GetShortUrlInfoByCode([FromRoute] string code)
+        [HttpGet("info")]
+        public async Task<IActionResult> GetShortUrlInfoByCode([FromQuery] RetrieveShortUrlInfoModel retrieveShortUrlInfoModel)
         {
-            return Ok(await _urlDynamicMetadataRepository.GetByCodeAsync(code));
+            RetrieveShortUrlInfoCommand retrieveShortUrlInfoCommand = new RetrieveShortUrlInfoCommand
+            {
+                ShortUrlCode = retrieveShortUrlInfoModel.ShortUrlCode
+            };
+
+            return Ok(await _retrieveShortUrlInfoHandler.HandleAsync(retrieveShortUrlInfoCommand));
         }
 
         [Authorize]
