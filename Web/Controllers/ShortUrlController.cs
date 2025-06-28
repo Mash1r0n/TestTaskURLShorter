@@ -54,7 +54,7 @@ namespace Web.Controllers
             if (userId == null) { return Unauthorized(); }
 
             var isLongUrlForThisUserExists = await _shortUrlRepository.ExistsForUserAsync(createShortUrlModel.LongUrl, userId);
-            if (isLongUrlForThisUserExists) return BadRequest("Only unique long urls per user");
+            if (isLongUrlForThisUserExists) return BadRequest("Only one unique long url per user");
 
             CreateShortUrlCommand createShortUrlCommand = new CreateShortUrlCommand
             {

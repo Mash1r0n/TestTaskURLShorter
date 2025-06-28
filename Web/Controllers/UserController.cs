@@ -31,9 +31,9 @@ namespace Web.Controllers
         public async Task<IActionResult> Register(RegisterDto dto)
         {
             var user = new IdentityUser 
-            { 
-                UserName = dto.Email, 
-                Email = dto.Email 
+            {
+                Email = dto.Email,
+                UserName = dto.Email
             };
 
             var result = await _userManager.CreateAsync(user, dto.Password);

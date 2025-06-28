@@ -36,7 +36,7 @@ namespace Infrastructure.IdentityStuff.IdentitySeeder
                 var result = await userManager.CreateAsync(adminUser, adminPassword);
 
                 if (!result.Succeeded)
-                    throw new InvalidDataException("Не вдалось створити адміністратора: " +
+                    throw new InvalidDataException("Unable to create an administrator: " +
                         string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
