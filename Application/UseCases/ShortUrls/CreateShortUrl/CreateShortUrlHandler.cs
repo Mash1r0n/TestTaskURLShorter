@@ -24,14 +24,13 @@ namespace Application.UseCases.ShortUrls.CreateShortUrl
             _codeGenerator = codeGenerator;
         }
 
-        public async Task<ShortUrlDto> Handle(CreateShortUrlCommand command)
+        public async Task<ShortUrlDto> HandleAsync(CreateShortUrlCommand command)
         {
             string code;
 
             do
             {
                 code = _codeGenerator.Generate();
-                
             }
             while (await _repository.GetByCodeAsync(code) != null);
 

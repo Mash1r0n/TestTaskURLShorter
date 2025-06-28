@@ -36,7 +36,6 @@ namespace Web.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, dto.Password);
-
             if (!result.Succeeded) return BadRequest(result.Errors);
 
             await _userManager.AddToRoleAsync(user, "User");
@@ -57,12 +56,11 @@ namespace Web.Controllers
             return Ok(new { token });
         }
 
-        [Authorize(Roles = "User, Admin")]
+        [Authorize]
         [HttpGet("me")]
         public IActionResult GetUser()
         {
             var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-
             if (email == null) return Unauthorized();
 
             return Ok(new { UserId = email });
@@ -73,7 +71,6 @@ namespace Web.Controllers
         public IActionResult GetAdminUser()
         {
             var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-
             if (email == null) return Unauthorized();
 
             return Ok(new { UserId = email });

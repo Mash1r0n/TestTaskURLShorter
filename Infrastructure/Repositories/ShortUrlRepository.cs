@@ -26,9 +26,23 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteAsync(ShortUrl shortUrl)
+        {
+            _context.ShortUrls.Remove(shortUrl);
+
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> ExistsForUserAsync(string longUrl, string ownerId)
         {
             return await _context.ShortUrls.AnyAsync(x => x.LongUrl == longUrl && x.OwnerId == ownerId);
+        }
+
+        public async Task<List<ShortUrl>> GetAllShortUrlsAsync()
+        {
+            return await _context.ShortUrls
+                .Include(x => x.DynamicMetadata)
+                .ToListAsync();
         }
 
         public async Task<ShortUrl?> GetByCodeAsync(string code)

@@ -10,8 +10,10 @@ namespace Application.Interfaces.Repositories
     public interface IShortUrlRepository
     {
         Task<ShortUrl?> GetByCodeAsync(string code);
+        Task<List<ShortUrl>> GetAllShortUrlsAsync();
         Task AddAsync(ShortUrl shortUrl);
         Task UpdateAsync(ShortUrl shortUrl);
+        Task DeleteAsync(ShortUrl shortUrl);
         Task<bool> ExistsForUserAsync(string longUrl, string ownerId);
     }
 }
