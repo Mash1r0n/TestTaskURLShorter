@@ -29,7 +29,6 @@ namespace Infrastructure.Services
             var roles = await _userManager.GetRolesAsync(user);
 
             var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role));
-
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
@@ -40,6 +39,7 @@ namespace Infrastructure.Services
             .Union(roleClaims);
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var expires = DateTime.UtcNow.AddMinutes(double.Parse(_config["Jwt:ExpiresMinutes"]!));

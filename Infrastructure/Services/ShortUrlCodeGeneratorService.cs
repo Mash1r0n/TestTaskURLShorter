@@ -14,12 +14,15 @@ namespace Infrastructure.Services
         public string Generate(int length = 8)
         {
             var guidBytes = Guid.NewGuid().ToByteArray();
+
             var number = BitConverter.ToUInt64(guidBytes, 0);
 
             var result = new StringBuilder();
+
             while (result.Length < length)
             {
                 result.Append(Alphabet[(int)(number % (ulong)Alphabet.Length)]);
+
                 number /= (ulong)Alphabet.Length;
             }
 

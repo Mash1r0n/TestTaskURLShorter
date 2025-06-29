@@ -25,8 +25,8 @@ namespace Infrastructure.DependencyInjection
 
             services.AddTransient<IShortUrlRepository, ShortUrlRepository>();
             services.AddTransient<IUrlDynamicMetadataRepository, UrlDynamicMetadataRepository>();
-            services.AddTransient<ITokenService, TokenService>();
 
+            services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IShortUrlCodeGeneratorService, ShortUrlCodeGeneratorService>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()

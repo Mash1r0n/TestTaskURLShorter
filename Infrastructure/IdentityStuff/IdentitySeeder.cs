@@ -12,38 +12,46 @@ namespace Infrastructure.IdentityStuff.IdentitySeeder
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            var roles = new[] { "Admin", "User" };
+            await EnsureRolesExist(roleManager, new[] { "Admin", "User" });
 
-            foreach (var role in roles)
-            {
-                if (!await roleManager.RoleExistsAsync(role))
-                    await roleManager.CreateAsync(new IdentityRole(role));
-            }
             var adminEmail = "admin@admin.com";
             var adminPassword = "@dm1NNN";
 
-            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            var adminUser = await GetOrCreateAdminUser(userManager, adminEmail, adminPassword);
 
-            if (adminUser == null)
+            await EnsureUserInRole(userManager, adminUser, "Admin");
+        }
+
+        private static async Task EnsureRolesExist(RoleManager<IdentityRole> roleManager, string[] roles)
+        {
+            foreach (var role in roles)
             {
-                adminUser = new IdentityUser
-                {
-                    UserName = adminEmail,
-                    Email = adminEmail,
-                    EmailConfirmed = true
-                };
-
-                var result = await userManager.CreateAsync(adminUser, adminPassword);
-
-                if (!result.Succeeded)
-                    throw new InvalidDataException("Unable to create an administrator: " +
-                        string.Join(", ", result.Errors.Select(e => e.Description)));
+                if (!await roleManager.RoleExistsAsync(role)) await roleManager.CreateAsync(new IdentityRole(role));
             }
+        }
 
-            if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+        private static async Task<IdentityUser> GetOrCreateAdminUser(UserManager<IdentityUser> userManager, string email, string password)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user != null) return user;
+
+            user = new IdentityUser
             {
-                await userManager.AddToRoleAsync(adminUser, "Admin");
-            }
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true
+            };
+
+            var result = await userManager.CreateAsync(user, password);
+            if (!result.Succeeded)
+                throw new InvalidDataException("Unable to create administrator: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+
+            return user;
+        }
+
+        private static async Task EnsureUserInRole(UserManager<IdentityUser> userManager, IdentityUser user, string role)
+        {
+            if (!await userManager.IsInRoleAsync(user, role)) await userManager.AddToRoleAsync(user, role);
         }
     }
 }

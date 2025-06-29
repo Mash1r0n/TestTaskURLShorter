@@ -18,14 +18,14 @@ namespace Domain.Entities
 
         public void ChangeDestination(string newUrl)
         {
-            if (!Uri.IsWellFormedUriString(newUrl, UriKind.Absolute)) throw new ValidationNotPassedException($"Invalid URL: {newUrl}");
+            if (IsUrlWasNotWellFormed(newUrl)) throw new ValidationNotPassedException($"Invalid URL: {newUrl}");
 
             LongUrl = newUrl;
         }
 
         public static ShortUrl Create(string longUrl, string ownerId, string shortedUrlCode)
         {
-            if (!Uri.IsWellFormedUriString(longUrl, UriKind.Absolute)) throw new ValidationNotPassedException($"Invalid URL: {longUrl}");
+            if (IsUrlWasNotWellFormed(longUrl)) throw new ValidationNotPassedException($"Invalid URL: {longUrl}");
 
             return new ShortUrl
             {
@@ -41,6 +41,11 @@ namespace Domain.Entities
         public void RegisterClick()
         {
             DynamicMetadata.RegisterClick();
+        }
+
+        private static bool IsUrlWasNotWellFormed(string url)
+        {
+            return !Uri.IsWellFormedUriString(url, UriKind.Absolute);
         }
 
         private ShortUrl() { }
