@@ -1,4 +1,5 @@
-﻿using Application.UseCases.Authorization.Registration;
+﻿using Application.UseCases.Authorization.Login;
+using Application.UseCases.Authorization.Registration;
 using Application.UseCases.ShortUrls.CreateShortUrl;
 using Application.UseCases.ShortUrls.RegisterClickAndReturnLongUrl;
 using Application.UseCases.ShortUrls.RetrieveShortUrlInfo;
@@ -19,6 +20,7 @@ namespace Application.DependencyInjection
             services.AddTransient<RetrieveShortUrlInfoHandler>();
             services.AddTransient<RegistrationHandler>();
             services.AddTransient<RegisterClickAndReturnLongUrlHandler>();
+            services.AddTransient<LoginHandler>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
