@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "About shorting algorythm";
+    var isAdmin = ViewBag.IsAdmin as bool? ?? false;
+}
+
+<h2 class="text-primary mb-3">Short url algorythm describe</h2>
+
+@if (!isAdmin)
+{
+    <div class="border p-3 bg-light">
+        <pre class="mb-0" style="white-space: pre-wrap; word-break: break-word;">@ViewBag.Description</pre>
+    </div>
+}
+else
+{
+    <form method="post" asp-action="Update">
+        <div class="form-group">
+            <textarea name="newContent" class="form-control" rows="10">@ViewBag.Description</textarea>
+        </div>
+        <button type="submit" class="btn btn-success mt-2">Save changes</button>
+    </form>
+}

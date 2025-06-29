@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces.Repositories;
+using Application.UseCases.ShortUrls.RegisterClickAndReturnLongUrl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,24 +9,23 @@ namespace Web.Controllers
     [Route("{code}")]
     public class RedirectController : ControllerBase
     {
-        private readonly IShortUrlRepository _repository;
+        private readonly RegisterClickAndReturnLongUrlHandler _registerClickAndReturnLongUrlHandler;
 
-        public RedirectController(IShortUrlRepository repository)
+        public RedirectController(RegisterClickAndReturnLongUrlHandler registerClickAndReturnLongUrlHandler)
         {
-            _repository = repository;
+            _registerClickAndReturnLongUrlHandler = registerClickAndReturnLongUrlHandler;
         }
 
         [HttpGet]
         public async Task<IActionResult> RedirectToLongUrl(string code)
         {
-            var shortUrl = await _repository.GetByCodeAsync(code);
-            if (shortUrl == null) return NotFound("URL not found");
+            RegisterClickAndReturnLongUrlCommand command = new RegisterClickAndReturnLongUrlCommand
+            {
+                code = code
+            };
 
-            shortUrl.RegisterClick();
-
-            await _repository.UpdateAsync(shortUrl);
-
-            return Ok(shortUrl.LongUrl);
+            var longUrl = await _registerClickAndReturnLongUrlHandler.HandleAsync(command);
+            return longUrl == null ? NotFound("URL not found") : Ok(longUrl);
         }
     }
 }

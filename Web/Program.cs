@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -36,7 +36,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "¬вед≥ть JWT токен у формат≥: Bearer {ваш_токен}"
+        Description = "Enter JWT token in the next format: Bearer {ваш_токен}"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -53,10 +53,6 @@ builder.Services.AddSwaggerGen(c =>
             new List<string>()
         }
     });
-
-    //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    //c.IncludeXmlComments(xmlPath);
 });
 
 
@@ -73,6 +69,7 @@ builder.Services
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         })
     .AddJwtBearer(options =>
         {
@@ -87,7 +84,11 @@ builder.Services
                 IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
             };
         }
-    );
+    )
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/About";
+    });
 
 var app = builder.Build();
 
@@ -100,9 +101,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseCors(OwnCorsConstants.CorsPolicy);
+
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
@@ -110,5 +115,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapDefaultControllerRoute();
 
 await app.RunAsync();
