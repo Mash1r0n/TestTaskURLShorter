@@ -48,6 +48,6 @@ namespace Domain.Entities
             return !Uri.IsWellFormedUriString(url, UriKind.Absolute);
         }
 
-        private ShortUrl() { }
+        public ShortUrl() { }
     }
 }
