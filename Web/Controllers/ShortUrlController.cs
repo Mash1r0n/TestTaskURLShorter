@@ -2,6 +2,7 @@
 using Application.Interfaces.Services;
 using Application.UseCases.ShortUrls.CreateShortUrl;
 using Application.UseCases.ShortUrls.RetrieveShortUrlInfo;
+using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -67,11 +68,6 @@ namespace Web.Controllers
             return Ok(createdShortUrl);
         }
 
-        private bool IsUserNotAdmin()
-        {
-            return !User.IsInRole("Admin");
-        }
-
         [Authorize]
         [HttpDelete("code/{code}")]
         public async Task<IActionResult> DeleteShortUrlByCode([FromRoute] string code)
@@ -79,14 +75,29 @@ namespace Web.Controllers
             var foundEntityForDelete = await _shortUrlRepository.GetByCodeAsync(code);
             if (foundEntityForDelete == null) return NotFound();
 
-            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userId = RetrieveUserIdFromControllerBase();
             if (userId == null) return Unauthorized();
 
-            if (foundEntityForDelete.OwnerId != userId && IsUserNotAdmin())return StatusCode(403, new { error = "User can delete only their shorted urls" });
+            if (IsUserCantDelete(foundEntityForDelete, userId)) return StatusCode(403, new { error = "User can delete only their shorted urls" });
 
             await _shortUrlRepository.DeleteAsync(foundEntityForDelete);
 
             return NoContent();
+        }
+
+        private bool IsUserNotAdmin()
+        {
+            return !User.IsInRole("Admin");
+        }
+
+        private bool IsUserCantDelete(ShortUrl entityForDelete, string userId)
+        {
+            return entityForDelete.OwnerId != userId && IsUserNotAdmin();
+        }
+
+        private string? RetrieveUserIdFromControllerBase()
+        {
+            return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         }
     }
 }

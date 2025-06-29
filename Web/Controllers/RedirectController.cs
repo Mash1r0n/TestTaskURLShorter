@@ -25,6 +25,7 @@ namespace Web.Controllers
             };
 
             var longUrl = await _registerClickAndReturnLongUrlHandler.HandleAsync(command);
+
             return longUrl == null ? NotFound("URL not found") : Ok(longUrl);
         }
     }

@@ -1,5 +1,8 @@
 ﻿using Application.DTOs;
 using Application.Interfaces.Services;
+using Application.UseCases.Authorization.Login;
+using Application.UseCases.Authorization.Registration;
+using Humanizer;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,63 +16,46 @@ namespace Web.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly ITokenService _tokenService;
+        private readonly RegistrationHandler _registrationHandler;
+        private readonly LoginHandler _loginHandler;
 
-        public UserController(UserManager<IdentityUser> userManager,
-                              SignInManager<IdentityUser> signInManager,
-                              ITokenService tokenService)
+        public UserController(RegistrationHandler registrationHandler,
+                              LoginHandler loginHandler)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _tokenService = tokenService;
+            _registrationHandler = registrationHandler;
+            _loginHandler = loginHandler;
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto dto)
+        public async Task<IActionResult> Register(RegistrationModel model)
         {
-            var user = new IdentityUser 
+            RegistrationCommand command = new RegistrationCommand
             {
-                Email = dto.Email,
-                UserName = dto.Email
+                Email = model.Email,
+                Password = model.Password,
             };
 
-            var result = await _userManager.CreateAsync(user, dto.Password);
-            if (!result.Succeeded) return BadRequest(result.Errors);
-
-            await _userManager.AddToRoleAsync(user, "User");
+            var result = await _registrationHandler.HandleAsync(command);
+            if (!result.IsSuccess) return BadRequest(result.Errors);
 
             return Ok();
         }
 
-        private async Task<bool> IsUserAdminAsync(IdentityUser user)
-        {
-            return await _userManager.IsInRoleAsync(user, "Admin");
-        }
-
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto dto)
+        public async Task<IActionResult> Login(LoginModel model)
         {
-            var user = await _userManager.FindByEmailAsync(dto.Email);
-            if (user == null) return Unauthorized("Account with this email not existed");
-
-            var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
-            if (!result.Succeeded) return Unauthorized("Incorrect password");
-
-            var token = await _tokenService.CreateToken(user);
-            bool isUserAdmin = await IsUserAdminAsync(user);
-
-            UserLoginResponseDto userLoginResponse = new UserLoginResponseDto
+            LoginCommand command = new LoginCommand
             {
-                Token = token,
-                UserId = user.Id,
-                IsUserAdmin = isUserAdmin
+                Email = model.Email,
+                Password = model.Password,
             };
 
-            return Ok(userLoginResponse);
+            var result = await _loginHandler.HandleAsync(command);
+            if (!result.IsSuccess) return Unauthorized(result.Errors);
+
+            return Ok(result.Value);
         }
     }
 }

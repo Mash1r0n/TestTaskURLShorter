@@ -23,17 +23,21 @@ namespace Web.Middlewares
             catch (ValidationException ex)
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
                 await context.Response.WriteAsync(ex.Message);
             }
             catch (ValidationNotPassedException ex)
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
                 await context.Response.WriteAsync(ex.Message);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled exception");
+
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
                 await context.Response.WriteAsync("An unexpected error occurred.");
             }
         }
