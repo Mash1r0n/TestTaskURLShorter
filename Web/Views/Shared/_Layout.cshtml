@@ -8,27 +8,6 @@
 <body>
     <header class="d-flex justify-content-between align-items-center px-4 py-3 text-white" style="background-color: #1976d2; font-family: 'Segoe UI', sans-serif;">
         <p class="h4 fw-bold mb-0">URL Shorter</p>
-
-        <section>
-            @if (!User.Identity?.IsAuthenticated ?? true)
-            {
-                <form asp-controller="UserMvc" asp-action="LoginForMvc" method="post" class="d-flex gap-2 align-items-center mb-0">
-                    <input type="email" name="email" class="form-control form-control-sm" placeholder="Email" required />
-                    <input type="password" name="password" class="form-control form-control-sm" placeholder="Password" required />
-                    <button type="submit" class="btn btn-light btn-sm">Login</button>
-                </form>
-            }
-            else
-            {
-                <section class="d-flex align-items-center gap-3">
-                    <span>@User.Identity?.Name ?? "Nameless"</span>
-                    <form asp-controller="UserMvc" asp-action="LogoutForMvc" method="post" class="mb-0">
-                        <button type="submit" class="btn btn-light btn-sm">Logout</button>
-                    </form>
-                </section>
-            }
-
-        </section>
     </header>
 
 

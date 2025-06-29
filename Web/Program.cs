@@ -84,11 +84,7 @@ builder.Services
                 IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
             };
         }
-    )
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/About";
-    });
+    );
 
 var app = builder.Build();
 
